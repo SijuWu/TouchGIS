@@ -161,54 +161,33 @@ void GestureManipulator::translate(HWND hwnd,GESTUREINFO gi,POINT lastPoint)
 
 void GestureManipulator::twoFingerTap(HWND hwnd)
 {
-
-	osg::ref_ptr<osg::Geode>geode1=(osg::Geode*)this->nodeMatrixRotate->getChild(0);
-	osg::ref_ptr<osg::Geode>geode2=(osg::Geode*)this->nodeMatrixRotate->getChild(1);
-	this->nodeMatrixRotate->setChild(0,geode2);
-	this->nodeMatrixRotate->setChild(1,geode1);
-	
+	if (!nodeMatrixTranslate==0)
+	{
+		osg::ref_ptr<osg::Geode>geode1=(osg::Geode*)this->nodeMatrixRotate->getChild(0);
+		osg::ref_ptr<osg::Geode>geode2=(osg::Geode*)this->nodeMatrixRotate->getChild(1);
+		this->nodeMatrixRotate->setChild(0,geode2);
+		this->nodeMatrixRotate->setChild(1,geode1);
+	}
 
 	InvalidateRect(hwnd, NULL, TRUE);
 }
 bool GestureManipulator::pick(const double x,const double y, osgViewer::Viewer* viewer)
 {
-	
-
 	if (!viewer->getSceneData())
 		return false;
 
-	double w=0.5;
-	double h=0.5;
-	
-	
-	osg::Camera* camera=viewer->getCamera();
-	osg::Matrix viewMatrix=camera->getViewMatrix();
-	osg::Matrix projectionMatrix=camera->getProjectionMatrix();
-	
-	
-	osg::Matrix VPW=viewMatrix*projectionMatrix;
-	
-	osg::Matrix inverseVPW;
-	inverseVPW.invert(VPW);
-    osg::Vec3d window(x,y,0);
-	this->centerRotateZoom=window*inverseVPW;
-	
-	
-	//osgUtil::PolytopeIntersector* picker=new osgUtil::PolytopeIntersector(osgUtil::Intersector::WINDOW,x-w, y-h, x+w, y+h);
 	osgUtil::LineSegmentIntersector* picker=new osgUtil::LineSegmentIntersector(osgUtil::Intersector::PROJECTION,x,y);
 	osgUtil::IntersectionVisitor intersectionVisitor(picker);
 	viewer->getCamera()->accept(intersectionVisitor);
-	
+
 	if (picker->containsIntersections())
 	{
-		
-		
 		const osg::NodePath& nodePath=picker->getFirstIntersection().nodePath;
 		unsigned int idx=nodePath.size();
 		while (idx--)
 		{
 			osg::Geode* geodePicked=dynamic_cast<osg::Geode*>(nodePath[idx]);
-	
+
 			// Find the LAST MatrixTransform in the node path;
 			// this will be the MatrixTransform to attach our callback to.
 			osg::MatrixTransform* mr =dynamic_cast<osg::MatrixTransform*>(nodePath[idx]);
@@ -216,84 +195,33 @@ bool GestureManipulator::pick(const double x,const double y, osgViewer::Viewer* 
 			if (mr == NULL)
 				continue;
 			osg::MatrixTransform* mt =dynamic_cast<osg::MatrixTransform*>(nodePath[idx-1]);
-			nodeMatrixRotate=mr;
-			nodeMatrixTranslate=mt;
+			this->nodeMatrixRotate=mr;
+			this->nodeMatrixTranslate=mt;
 			break;
 		}
+
+		this->count=0;
+
+		osg::Camera* camera=viewer->getCamera();
+		osg::Matrix viewMatrix=camera->getViewMatrix();
+		osg::Matrix projectionMatrix=camera->getProjectionMatrix();
+
+		osg::Matrix VPW=viewMatrix*projectionMatrix;
+
+		osg::Matrix inverseVPW;
+		inverseVPW.invert(VPW);
+		osg::Vec3d window(x,y,0);
+		this->centerRotateZoom=window*inverseVPW;
+
+		osg::Matrix matrixTran=this->nodeMatrixTranslate->getMatrix();
+		osg::Vec3 translation=matrixTran.getTrans();
+
+		osg::Matrix inverse;
+		inverse.invert(matrixTran);
+		this->centerRotateZoom=this->centerRotateZoom*inverse;
 	}
 }
 
-bool GestureManipulator::pick(const double x,const double y, osgViewer::Viewer* viewer,osg::ref_ptr<osg::MatrixTransform>matrixTranslate)
-{
-	this->count=0;
-
-	if (!viewer->getSceneData())
-		return false;
-
-	double w=1;
-	double h=1;
-
-
-	osg::Camera* camera=viewer->getCamera();
-	osg::Matrix viewMatrix=camera->getViewMatrix();
-	osg::Matrix projectionMatrix=camera->getProjectionMatrix();
-
-
-	osg::Matrix VPW=viewMatrix*projectionMatrix;
-
-	osg::Matrix inverseVPW;
-	inverseVPW.invert(VPW);
-	osg::Vec3d window(x,y,0);
-	this->centerRotateZoom=window*inverseVPW;
-	osg::Matrix matrixTran=matrixTranslate->getMatrix();
-	osg::Vec3 translation=matrixTran.getTrans();
-
-	
-	osg::Matrix inverse;
-	
-	inverse.invert(matrixTran);
-	this->centerRotateZoom=this->centerRotateZoom*inverse;
-
-	osgUtil::LineSegmentIntersector* picker=new osgUtil::LineSegmentIntersector(osgUtil::Intersector::WINDOW,x,y);
-	osgUtil::IntersectionVisitor intersectionVisitor(picker);
-	viewer->getCamera()->accept(intersectionVisitor);
-
-	if (picker->containsIntersections())
-	{
-		/*for(int i=0;i<this->geometryPickeds.size();i++)
-		{
-			osg::Vec4Array* color=new osg::Vec4Array;
-			color->push_back(osg::Vec4(0.0f,0.0f,1.0f,1.0f));
-			this->geometryPickeds[i]->setColorArray(color);
-		}
-		this->geometryPickeds.resize(0);
-		osg::ref_ptr<osg::Geometry> geometry=picker->getFirstIntersection().drawable->asGeometry();
-		osg::Vec4Array* lineColor=new osg::Vec4Array;
-		lineColor->push_back(osg::Vec4(0.0f,1.0f,1.0f,1.0f));
-		geometry->setColorArray(lineColor);
-		geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
-		this->geometryPickeds.push_back(geometry);*/
-		
-		
-
- 		const osg::NodePath& nodePath=picker->getFirstIntersection().nodePath;
-		unsigned int idx=nodePath.size();
-		while (idx--)
-		{
-		
-			// Find the LAST MatrixTransform in the node path;
-			// this will be the MatrixTransform to attach our callback to.
-			osg::MatrixTransform* mr =dynamic_cast<osg::MatrixTransform*>(nodePath[idx]);
-
-			if (mr == NULL)
-				continue;
-			osg::MatrixTransform* mt =dynamic_cast<osg::MatrixTransform*>(nodePath[idx-1]);
-			nodeMatrixRotate=mr;
-			nodeMatrixTranslate=mt;
-			break;
-		}
-	}
-}
 
 osg::ref_ptr<osg::MatrixTransform>GestureManipulator::getMatrixTransformTranslate()
 {

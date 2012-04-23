@@ -26,7 +26,7 @@ public:
 	
 	//Pick an object by the gesture
 	bool pick(const double x,const double y, osgViewer::Viewer* viewer);
-	bool pick(const double x,const double y, osgViewer::Viewer* viewer,osg::ref_ptr<osg::MatrixTransform>matrixTranslate);
+
 	osg::ref_ptr<osg::MatrixTransform>getMatrixTransformTranslate();
 	void setMatrixTransformTranslate(osg::ref_ptr<osg::MatrixTransform> nodeMatrixTranslate);
 

@@ -67,11 +67,6 @@ using std::vector;
 
 osg::ref_ptr<osgViewer::Viewer> viewer;
 
-//osg::ref_ptr<osgViewer::CompositeViewer>compositeViewer;
-//osg::ref_ptr<osgViewer::View>view1=new osgViewer::View;
-//osg::ref_ptr<osgViewer::View>view2=new osgViewer::View;
-
-
 osg::observer_ptr<osgViewer::GraphicsWindow> window;
 osg::ref_ptr<osg::Group> root;
 
@@ -215,21 +210,20 @@ void createMapView(HWND hwnd)
 
 	matrixTranslate=new osg::MatrixTransform();
 	matrixRotate=new osg::MatrixTransform();
-	osg::ref_ptr<osg::MatrixTransform> matrixtest=new osg::MatrixTransform();
-	osg::Matrix* matrix111=new osg::Matrix;
-	matrix111->makeTranslate(osg::Vec3(5,0,0));
-	matrixtest->setMatrix(*matrix111);
+	
 	matrixChangeCenter=new osg::Matrix;
 	matrixChangeCenter->identity();
+
 	matrixRotation=new osg::Matrix;
 	matrixRotation->identity();
+
 	matrixChangeBack=new osg::Matrix;
 	matrixChangeBack->identity();
+
 	matrixZoom=new osg::Matrix;
 	matrixZoom->identity();
 
 	matrixRotate->setMatrix((*matrixChangeCenter)*(*matrixRotation)*(*matrixZoom)*(*matrixChangeBack));
-
 
 	matrixTranslate->addChild(matrixRotate);
 
@@ -239,12 +233,10 @@ void createMapView(HWND hwnd)
 	{
 		matrixRotate->addChild(mapLayers[i]);
 	}
-	
 
 	root = new osg::Group;
 	root->addChild(matrixTranslate);
 	
-
 	createContext(hwnd);
 
 	camera = new osg::Camera;
@@ -265,7 +257,6 @@ void createMapView(HWND hwnd)
 	viewer->setCameraManipulator(new osgGA::TrackballManipulator);
 	viewer->addEventHandler(new MapManipulator);
 
-
 	osg::Matrix viewMatrix=camera->getViewMatrix();
 	osg::Matrix projectionMatrix=camera->getProjectionMatrix();
 	osg::Matrix windowMatrix=camera->getViewport()->computeWindowMatrix();
@@ -281,20 +272,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
-
-	case WM_KEYDOWN:
-  		mapCount=matrixRotate->getNumChildren();
-		if(mapCount>1)
-		{
-			geodeChanged=(osg::Geode*)matrixRotate->getChild(mapCount-1);
-			matrixRotate->removeChild(geodeChanged);
-		}
-		return 0;
-
-	case WM_KEYUP:
-		matrixRotate->addChild(geodeChanged);
-		return 0;
-
 
 	case WM_GESTURE:
 		static POINT lastPoint;
@@ -326,10 +303,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 		case GID_BEGIN:
 
-			//gestureManipulator->pick(touchX,touchY,viewer);
-			gestureManipulator->setMatrixTransformTranslate(matrixTranslate);
-			gestureManipulator->setMatrixTransformRotate(matrixRotate);
-			gestureManipulator->pick(touchX,touchY,viewer,matrixTranslate);
+			gestureManipulator->pick(touchX,touchY,viewer);
 
 			break;
 		case GID_END:
@@ -341,26 +315,20 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case GID_PAN:
 			if ((gi.dwFlags & GF_BEGIN) == 0) //not the first message
-			{
-				
-				gestureManipulator->translate(hwnd,gi,lastPoint);
-				
+			{		
+				gestureManipulator->translate(hwnd,gi,lastPoint);		
 			}
 			break;
 
 		case GID_ZOOM:            //not the first message
 			if ((gi.dwFlags & GF_BEGIN) == 0 && lastArguments != 0)
 			{
-			
-				gestureManipulator->scale(hwnd,gi,lastPoint,lastArguments,matrixChangeCenter,matrixRotation,matrixChangeBack,matrixZoom);
-				
+				gestureManipulator->scale(hwnd,gi,lastPoint,lastArguments,matrixChangeCenter,matrixRotation,matrixChangeBack,matrixZoom);			
 			}
 			break;
 		case GID_ROTATE:
 			{
-				
 				gestureManipulator->rotate(hwnd,gi,lastArguments,matrixChangeCenter,matrixRotation,matrixChangeBack,matrixZoom);
-				
 			}
 
 			break;
@@ -386,8 +354,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_PAINT:
 		return 0;
-
-		
 
 	case WM_DESTROY:
 		viewer->setDone(true);
