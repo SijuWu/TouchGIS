@@ -20,28 +20,6 @@ void GestureManipulator::scale(HWND hwnd,GESTUREINFO gi,POINT lastPoint,ULONGLON
 	float scale =1.1;
 	if (!nodeMatrixTranslate==0)
 	{
-		osg::Matrix matrix=nodeMatrixRotate->getMatrix();
-		osg::Matrix scaleMatrix;
-		if (zoomFactor>1)
-			scaleMatrix.makeScale(scale,scale,scale);
-		else if (zoomFactor<1)
-			scaleMatrix.makeScale(1/scale,1/scale,1/scale);
-
-		matrix=matrix*scaleMatrix;
-
-		nodeMatrixRotate->setMatrix(matrix);
-	}
-
-	InvalidateRect(hwnd,NULL,TRUE);
-}
-void GestureManipulator::scale(HWND hwnd,GESTUREINFO gi,POINT lastPoint,ULONGLONG lastArguments,osg::Matrix* matrixChangeCenter,osg::Matrix* matrixRotation,osg::Matrix* matrixChangeBack,osg::Matrix* matrixZoom)
-{
-	double zoomFactor = (double)gi.ullArguments/lastArguments;
-
-	// zoom model.
-	float scale =1.1;
-	if (!nodeMatrixTranslate==0)
-	{
 		osg::Matrix inverse;
 		osg::Matrix rotate=nodeMatrixRotate->getMatrix();
 		inverse.invert(rotate);
@@ -49,17 +27,16 @@ void GestureManipulator::scale(HWND hwnd,GESTUREINFO gi,POINT lastPoint,ULONGLON
 
 		if (this->count==0)
 		{
-
 			osg::Vec3 touch=this->centerRotateZoom*inverse;
 			osg::Vec3 back=this->centerRotateZoom;
-			(*matrixChangeBack).identity();
-			(*matrixChangeBack).makeTranslate(back);
+			(*this->matrixChangeBack).identity();
+			(*this->matrixChangeBack).makeTranslate(back);
 			touch.x()=-touch.x();
 			touch.y()=-touch.y();
 			touch.z()=-touch.z();
-			(*matrixChangeCenter).identity();
+			(*this->matrixChangeCenter).identity();
 
-			(*matrixChangeCenter).makeTranslate(touch);
+			(*this->matrixChangeCenter).makeTranslate(touch);
 
 			this->count++;
 		}
@@ -69,34 +46,16 @@ void GestureManipulator::scale(HWND hwnd,GESTUREINFO gi,POINT lastPoint,ULONGLON
 			scaleMatrix.makeScale(scale,1,scale);
 		else if (zoomFactor<1)
 			scaleMatrix.makeScale(1/scale,1,1/scale);
-		*matrixZoom=(*matrixZoom)*scaleMatrix;
+		(*this->matrixZoom)=(*this->matrixZoom)*scaleMatrix;
 
-		nodeMatrixRotate->setMatrix((*matrixChangeCenter)*(*matrixRotation)*(*matrixZoom)*(*matrixChangeBack));
+		nodeMatrixRotate->setMatrix((*this->matrixChangeCenter)*(*this->matrixRotation)*(*this->matrixZoom)*(*this->matrixChangeBack));
 
 	}
 
 	InvalidateRect(hwnd,NULL,TRUE);
 }
+
 void GestureManipulator::rotate(HWND hwnd,GESTUREINFO gi,ULONGLONG lastArguments)
-{
-	//The angle is the rotation delta from the last message, 
-	//or from 0 if it is a new message
-	ULONGLONG lastAngle = ((gi.dwFlags & GF_BEGIN) != 0) ? 0 : lastArguments;
-
-	double angle=GID_ROTATE_ANGLE_FROM_ARGUMENT(gi.ullArguments)-GID_ROTATE_ANGLE_FROM_ARGUMENT(lastAngle);
-
-	if (!nodeMatrixRotate==0)
-	{
-		osg::Matrix matrix=nodeMatrixRotate->getMatrix();
-		osg::Matrix rotateMatrix;
-		rotateMatrix.makeRotate(-angle,osg::Vec3(0,1,0));
-		matrix=matrix*rotateMatrix;
-		nodeMatrixRotate->setMatrix(matrix);
-	}
-	InvalidateRect (hwnd, NULL, TRUE);
-}
-
-void GestureManipulator::rotate(HWND hwnd,GESTUREINFO gi,ULONGLONG lastArguments,osg::Matrix* matrixChangeCenter,osg::Matrix* matrixRotation,osg::Matrix* matrixChangeBack,osg::Matrix* matrixZoom)
 {
 	//The angle is the rotation delta from the last message, 
 	//or from 0 if it is a new message
@@ -110,34 +69,34 @@ void GestureManipulator::rotate(HWND hwnd,GESTUREINFO gi,ULONGLONG lastArguments
 		osg::Matrix rotate=nodeMatrixRotate->getMatrix();
 		inverse.invert(rotate);
 
-
 		if (this->count==0)
 		{
 
 			osg::Vec3 touch=this->centerRotateZoom*inverse;
 			osg::Vec3 back=this->centerRotateZoom;
-			(*matrixChangeBack).identity();
-			(*matrixChangeBack).makeTranslate(back);
+			(*this->matrixChangeBack).identity();
+			(*this->matrixChangeBack).makeTranslate(back);
 			touch.x()=-touch.x();
 			touch.y()=-touch.y();
 			touch.z()=-touch.z();
-			(*matrixChangeCenter).identity();
+			(*this->matrixChangeCenter).identity();
 			
-			(*matrixChangeCenter).makeTranslate(touch);
+			(*this->matrixChangeCenter).makeTranslate(touch);
 
 			this->count++;
 		}
 
 		osg::Matrix rotateMatrix;
 		rotateMatrix.makeRotate(-angle,osg::Vec3(0,1,0));
-		*matrixRotation=(*matrixRotation)*rotateMatrix;
+		(*this->matrixRotation)=(*this->matrixRotation)*rotateMatrix;
 
-		nodeMatrixRotate->setMatrix((*matrixChangeCenter)*(*matrixRotation)*(*matrixZoom)*(*matrixChangeBack));
+		nodeMatrixRotate->setMatrix((*this->matrixChangeCenter)*(*this->matrixRotation)*(*this->matrixZoom)*(*this->matrixChangeBack));
 
 
 	}
 	InvalidateRect (hwnd, NULL, TRUE);
 }
+
 
 void GestureManipulator::translate(HWND hwnd,GESTUREINFO gi,POINT lastPoint)
 {
@@ -151,7 +110,7 @@ void GestureManipulator::translate(HWND hwnd,GESTUREINFO gi,POINT lastPoint)
 		osg::Vec3 position(0.0f,0.0f,0.0f);
 
 		osg::Matrix translateMatrix;
-		translateMatrix.makeTranslate(dv/10);
+		translateMatrix.makeTranslate(dv/scale);
 		matrix=matrix*translateMatrix;
 
 		nodeMatrixTranslate->setMatrix(matrix);
@@ -243,3 +202,11 @@ void GestureManipulator::setMatrixTransformRotate(osg::ref_ptr<osg::MatrixTransf
 	this->nodeMatrixRotate=nodeMatrixRotate;
 }
 
+
+void GestureManipulator::setMatrix(osg::Matrix* matrixChangeCenter,osg::Matrix* matrixRotation,osg::Matrix* matrixChangeBack,osg::Matrix* matrixZoom)
+{
+	this->matrixChangeCenter=matrixChangeCenter;
+	this->matrixRotation=matrixRotation;
+	this->matrixChangeBack=matrixChangeBack;
+	this->matrixZoom=matrixZoom;
+}

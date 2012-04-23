@@ -303,14 +303,17 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 		case GID_BEGIN:
 
-			gestureManipulator->pick(touchX,touchY,viewer);
+			if(gestureManipulator->pick(touchX,touchY,viewer))
+			{
+				gestureManipulator->setMatrix(matrixChangeCenter,matrixRotation,matrixChangeBack, matrixZoom);
+			}
 
 			break;
 		case GID_END:
 
 			gestureManipulator->setMatrixTransformTranslate(0);
 			gestureManipulator->setMatrixTransformRotate(0);
-			
+			gestureManipulator->setMatrix(0,0,0,0);
 			
 			break;
 		case GID_PAN:
@@ -323,12 +326,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case GID_ZOOM:            //not the first message
 			if ((gi.dwFlags & GF_BEGIN) == 0 && lastArguments != 0)
 			{
-				gestureManipulator->scale(hwnd,gi,lastPoint,lastArguments,matrixChangeCenter,matrixRotation,matrixChangeBack,matrixZoom);			
+				gestureManipulator->scale(hwnd,gi,lastPoint,lastArguments);			
 			}
 			break;
 		case GID_ROTATE:
 			{
-				gestureManipulator->rotate(hwnd,gi,lastArguments,matrixChangeCenter,matrixRotation,matrixChangeBack,matrixZoom);
+				gestureManipulator->rotate(hwnd,gi,lastArguments);
 			}
 
 			break;

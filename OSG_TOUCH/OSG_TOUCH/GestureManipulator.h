@@ -13,11 +13,9 @@ public:
 
 	//Scale the object chosen
 	void scale(HWND hwnd,GESTUREINFO gi,POINT lastPoint,ULONGLONG lastArguments);
-	void scale(HWND hwnd,GESTUREINFO gi,POINT lastPoint,ULONGLONG lastArguments,osg::Matrix* matrixChangeCenter,osg::Matrix* matrixRotation,osg::Matrix* matrixChangeBack,osg::Matrix* matrixZoom);
 
 	//Rotate the object chosen
 	void rotate(HWND hwnd,GESTUREINFO gi,ULONGLONG lastArguments);
-	void rotate(HWND hwnd,GESTUREINFO gi,ULONGLONG lastArguments,osg::Matrix* matrixChangeCenter,osg::Matrix* matrixRotation,osg::Matrix* matrixChangeBack,osg::Matrix* matrixZoom);
 
 	//Translate the object chosen
 	void translate(HWND hwnd,GESTUREINFO gi,POINT lastPoint);
@@ -33,6 +31,7 @@ public:
 	osg::ref_ptr<osg::MatrixTransform>getMatrixTransformRotate();
 	void setMatrixTransformRotate(osg::ref_ptr<osg::MatrixTransform> nodeMatrixRotate);
 
+	void setMatrix(osg::Matrix* matrixChangeCenter,osg::Matrix* matrixRotation,osg::Matrix* matrixChangeBack,osg::Matrix* matrixZoom);
 	
 
 private:
@@ -44,7 +43,13 @@ private:
 
 	osg::Vec3 centerRotateZoom;
 
-	
+	osg::Matrix* matrixChangeCenter;
+
+	osg::Matrix* matrixRotation;
+
+	osg::Matrix* matrixChangeBack;
+
+	osg::Matrix* matrixZoom;
 
 	int count;
 };
