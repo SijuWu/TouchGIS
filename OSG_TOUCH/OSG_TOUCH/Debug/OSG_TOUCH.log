@@ -1,12 +1,15 @@
-﻿La génération a démarré 20/04/2012 17:04:36.
+﻿La génération a démarré 23/04/2012 11:09:19.
      1>Projet "D:\visual studio 2010\OSG_TOUCH\OSG_TOUCH\OSG_TOUCH.vcxproj" sur le nœud 2 (build cible(s)).
      1>InitializeBuildStatus:
          Création de "Debug\OSG_TOUCH.unsuccessfulbuild", car "AlwaysCreate" a été spécifié.
        ClCompile:
          Toutes les sorties sont à jour.
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\OSG_TOUCH.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt OSG_TOUCH.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\OSG_TOUCH.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt MapLayerView.cpp OGR.cpp OSG_TOUCH.cpp
          OSG_TOUCH.cpp
      1>d:\visual studio 2010\osg_touch\osg_touch\osg_touch.cpp(238): warning C4018: '<' : incompatibilité signed/unsigned
+         OGR.cpp
+         MapLayerView.cpp
+         Génération de code en cours...
        ResourceCompile:
          Toutes les sorties sont à jour.
        ManifestResourceCompile:
@@ -17,7 +20,7 @@
          Debug\GestureManipulator.obj
          Debug\LinearRingView.obj
          Debug\LineStringView.obj
-         Debug\Map.obj
+         Debug\MapLayer.obj
          Debug\MapLinearRing.obj
          Debug\MapLineString.obj
          Debug\MapManipulator.obj
@@ -26,7 +29,7 @@
          Debug\MapMultiPolygon.obj
          Debug\MapPoint.obj
          Debug\MapPolygon.obj
-         Debug\MapView.obj
+         Debug\MapLayerView.obj
          Debug\MultiLineStringView.obj
          Debug\MultiPolygonView.obj
          Debug\OGR.obj
@@ -47,4 +50,4 @@
 
 La génération a réussi.
 
-Temps écoulé 00:00:11.51
+Temps écoulé 00:00:18.03

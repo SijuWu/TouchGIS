@@ -20,9 +20,9 @@ OGR::~OGR(void)
 {
 }
 
-void OGR::readMap(Map* map, MapView* mapView,char* source,bool polygonFill)
+void OGR::readMapLayer(MapLayer* mapLayer, MapLayerView* mapLayerView,char* source,bool polygonFill)
 {
-	osg::ref_ptr<osg::Geode>mapNode=new osg::Geode;
+	osg::ref_ptr<osg::Geode>mapLayerNode=new osg::Geode;
 	/*osg::ref_ptr<osg::Group>maplayer=new osg::Group;
 	maplayer->addChild(mapNode.get());*/
 
@@ -107,21 +107,21 @@ void OGR::readMap(Map* map, MapView* mapView,char* source,bool polygonFill)
 			{
 			case wkbPoint:
 			case wkbPoint25D:
-				 pointToDrawable(static_cast<MapPoint*>(poFeature->GetGeometryRef()->clone()),mapNode,color);
+				 pointToDrawable(static_cast<MapPoint*>(poFeature->GetGeometryRef()->clone()),mapLayerNode,color);
 				break;
 
 			case wkbLinearRing:
-				linearRingToDrawable(static_cast<MapLinearRing*>(poFeature->GetGeometryRef()->clone()),mapNode);
+				linearRingToDrawable(static_cast<MapLinearRing*>(poFeature->GetGeometryRef()->clone()),mapLayerNode);
 				break;
 
 			case wkbLineString:
 			case wkbLineString25D:
-				lineStringToDrawable(static_cast<MapLineString*>(poFeature->GetGeometryRef()->clone()),mapNode,color);
+				lineStringToDrawable(static_cast<MapLineString*>(poFeature->GetGeometryRef()->clone()),mapLayerNode,color);
 				break;
             
 			case wkbPolygon:
             case wkbPolygon25D:
-				polygonToDrawable(static_cast<MapPolygon*>(poFeature->GetGeometryRef()->clone()),mapNode, polygonFill,color);
+				polygonToDrawable(static_cast<MapPolygon*>(poFeature->GetGeometryRef()->clone()),mapLayerNode, polygonFill,color);
 			    break; 
 
 		    case wkbMultiPoint:
@@ -130,12 +130,12 @@ void OGR::readMap(Map* map, MapView* mapView,char* source,bool polygonFill)
 
 			case wkbMultiLineString:
 			case wkbMultiLineString25D:
-				multiLineStringToDrawable(static_cast<MapMultiLineString*>(poFeature->GetGeometryRef()->clone()),mapNode,color);
+				multiLineStringToDrawable(static_cast<MapMultiLineString*>(poFeature->GetGeometryRef()->clone()),mapLayerNode,color);
 				break;
 
 			case wkbMultiPolygon:
 			case wkbMultiPolygon25D:
-				//multiPolygonToDrawable(static_cast<MapMultiPolygon*>(poFeature->GetGeometryRef()->clone()),mapNode,polygonFill,color);
+				//multiPolygonToDrawable(static_cast<MapMultiPolygon*>(poFeature->GetGeometryRef()->clone()),mapLayerNode,polygonFill,color);
 				break;
 
 			case wkbGeometryCollection:
@@ -161,88 +161,88 @@ void OGR::readMap(Map* map, MapView* mapView,char* source,bool polygonFill)
 
 	OGRDataSource::DestroyDataSource( poDS );
 	
-	map->setMapPoints(mapPoints);
-	map->setMapLineStrings(mapLineStrings);
-	map->setMapLinearRings(mapLinearRings);
-	map->setMapPolygons(mapPolygons);
-	map->setMapMultiPolygons(mapMultiPolygons);
-	map->setMapMultiLineStrings(mapMultiLineStrings);
+	mapLayer->setMapPoints(mapPoints);
+	mapLayer->setMapLineStrings(mapLineStrings);
+	mapLayer->setMapLinearRings(mapLinearRings);
+	mapLayer->setMapPolygons(mapPolygons);
+	mapLayer->setMapMultiPolygons(mapMultiPolygons);
+	mapLayer->setMapMultiLineStrings(mapMultiLineStrings);
 
-	mapView->setMap(map);
-	mapView->setPointViews(pointViews);
-	mapView->setLineStringView(lineStringViews);
-	mapView->setLinearRingView(linearRingViews);
-	mapView->setPolygonView(polygonViews);
-	mapView->setMultiPolygonView(multiPolygonViews);
-	mapView->setMultiLineStringView(multiLineStringViews);
-	mapView->setMapNode(mapNode);
+	mapLayerView->setMapLayer(mapLayer);
+	mapLayerView->setPointViews(pointViews);
+	mapLayerView->setLineStringView(lineStringViews);
+	mapLayerView->setLinearRingView(linearRingViews);
+	mapLayerView->setPolygonView(polygonViews);
+	mapLayerView->setMultiPolygonView(multiPolygonViews);
+	mapLayerView->setMultiLineStringView(multiLineStringViews);
+	mapLayerView->setMapLayerNode(mapLayerNode);
 	//mapView->setLayer(maplayer);
 
 }
 
 
 
-void OGR::pointToDrawable(MapPoint* mapPoint,osg::ref_ptr<osg::Geode> mapNode,osg::Vec4 color)
+void OGR::pointToDrawable(MapPoint* mapPoint,osg::ref_ptr<osg::Geode> mapLayerNode,osg::Vec4 color)
 {
 	mapPoints.push_back(mapPoint);
 	PointView* pointView=new PointView(mapPoint,pointSize,color);
 	pointViews.push_back(pointView);
-	mapNode->addDrawable(pointView->getGeometryPoint());
+	mapLayerNode->addDrawable(pointView->getGeometryPoint());
 }
 
-void OGR::lineStringToDrawable(MapLineString* mapLineString,osg::ref_ptr<osg::Geode> mapNode,osg::Vec4 color)
+void OGR::lineStringToDrawable(MapLineString* mapLineString,osg::ref_ptr<osg::Geode> mapLayerNode,osg::Vec4 color)
 {
 	
 	mapLineStrings.push_back(mapLineString);
 	LineStringView* lineStringView=new LineStringView(mapLineString,lineWidth,color);
 	lineStringViews.push_back(lineStringView);
-	mapNode->addDrawable(lineStringView->getGeometryLineString());
+	mapLayerNode->addDrawable(lineStringView->getGeometryLineString());
 }
 
-void OGR::linearRingToDrawable(MapLinearRing* mapLinearRing,osg::ref_ptr<osg::Geode> mapNode)
+void OGR::linearRingToDrawable(MapLinearRing* mapLinearRing,osg::ref_ptr<osg::Geode> mapLayerNode)
 {
 	
 	mapLinearRings.push_back(mapLinearRing);
 	LinearRingView* linearRingView=new LinearRingView(mapLinearRing,lineWidth);
 	linearRingViews.push_back(linearRingView);
-	mapNode->addDrawable(linearRingView->getGeometryLinearRing());
+	mapLayerNode->addDrawable(linearRingView->getGeometryLinearRing());
 }
 
-void OGR::polygonToDrawable(MapPolygon* mapPolygon,osg::ref_ptr<osg::Geode> mapNode,bool polygonFill,osg::Vec4 color)
+void OGR::polygonToDrawable(MapPolygon* mapPolygon,osg::ref_ptr<osg::Geode> mapLayerNode,bool polygonFill,osg::Vec4 color)
 {
 	mapPolygons.push_back(mapPolygon);
 
 	PolygonView* polygonView=new PolygonView(mapPolygon,polygonFill,color);
 	polygonViews.push_back(polygonView);
 	
-	mapNode->addDrawable(polygonView->getGeometryEdgePolygon());
+	mapLayerNode->addDrawable(polygonView->getGeometryEdgePolygon());
 	if (polygonFill==true)
 	{
-		mapNode->addDrawable(polygonView->getGeometryPolygon());
+		mapLayerNode->addDrawable(polygonView->getGeometryPolygon());
 	}
 		
 }
 
-void OGR::multiLineStringToDrawable(MapMultiLineString* mapMultiLineString,osg::ref_ptr<osg::Geode> mapNode,osg::Vec4 color)
+void OGR::multiLineStringToDrawable(MapMultiLineString* mapMultiLineString,osg::ref_ptr<osg::Geode> mapLayerNode,osg::Vec4 color)
 {
 	mapMultiLineStrings.push_back(mapMultiLineString);
 
 	MultiLineStringView* multiLineStringView=new MultiLineStringView(mapMultiLineString,lineWidth,color);
 	multiLineStringViews.push_back(multiLineStringView);
 	
-	mapNode->addDrawable(multiLineStringView->getGeometryMultiLineStrings());
+	mapLayerNode->addDrawable(multiLineStringView->getGeometryMultiLineStrings());
 
 }
 
-void OGR::multiPolygonToDrawable(MapMultiPolygon* mapMultiPolygon,osg::ref_ptr<osg::Geode> mapNode,bool polygonFill,osg::Vec4 color)
+void OGR::multiPolygonToDrawable(MapMultiPolygon* mapMultiPolygon,osg::ref_ptr<osg::Geode> mapLayerNode,bool polygonFill,osg::Vec4 color)
 {
 	MultiPolygonView* multiPolygonView=new MultiPolygonView(mapMultiPolygon,polygonFill,color);
 	multiPolygonViews.push_back(multiPolygonView);
 	
-	mapNode->addDrawable(multiPolygonView->getGeometryEdgePolygon());
+	mapLayerNode->addDrawable(multiPolygonView->getGeometryEdgePolygon());
 	/*if (polygonFill==true)
 	{*/
-		mapNode->addDrawable(multiPolygonView->getGeometryPolygon());
+		mapLayerNode->addDrawable(multiPolygonView->getGeometryPolygon());
 	/*}*/	
 
 }

@@ -83,7 +83,7 @@
     <ClInclude Include="GestureManipulator.h" />
     <ClInclude Include="LinearRingView.h" />
     <ClInclude Include="LineStringView.h" />
-    <ClInclude Include="Map.h" />
+    <ClInclude Include="MapLayer.h" />
     <ClInclude Include="MapLinearRing.h" />
     <ClInclude Include="MapLineString.h" />
     <ClInclude Include="MapManipulator.h" />
@@ -92,7 +92,7 @@
     <ClInclude Include="MapMultiPolygon.h" />
     <ClInclude Include="MapPoint.h" />
     <ClInclude Include="MapPolygon.h" />
-    <ClInclude Include="MapView.h" />
+    <ClInclude Include="MapLayerView.h" />
     <ClInclude Include="MultiLineStringView.h" />
     <ClInclude Include="MultiPolygonView.h" />
     <ClInclude Include="OGR.h" />
@@ -107,7 +107,7 @@
     <ClCompile Include="GestureManipulator.cpp" />
     <ClCompile Include="LinearRingView.cpp" />
     <ClCompile Include="LineStringView.cpp" />
-    <ClCompile Include="Map.cpp" />
+    <ClCompile Include="MapLayer.cpp" />
     <ClCompile Include="MapLinearRing.cpp" />
     <ClCompile Include="MapLineString.cpp" />
     <ClCompile Include="MapManipulator.cpp" />
@@ -116,7 +116,7 @@
     <ClCompile Include="MapMultiPolygon.cpp" />
     <ClCompile Include="MapPoint.cpp" />
     <ClCompile Include="MapPolygon.cpp" />
-    <ClCompile Include="MapView.cpp" />
+    <ClCompile Include="MapLayerView.cpp" />
     <ClCompile Include="MultiLineStringView.cpp" />
     <ClCompile Include="MultiPolygonView.cpp" />
     <ClCompile Include="OGR.cpp" />

@@ -41,8 +41,8 @@
 #include "PolygonView.h"
 #include "MapPoint.h"
 #include "PointView.h"
-#include "Map.h"
-#include "MapView.h"
+#include "MapLayer.h"
+#include "MapLayerView.h"
 #include "OGR.h"
 #include "GestureManipulator.h"
 
@@ -200,18 +200,18 @@ void createMapView(HWND hwnd)
 	
 	mapLayers.reserve(0);
 
-	Map* map1=new Map;
-	MapView* mapView1=new MapView;
+	MapLayer* mapLayer1=new MapLayer;
+	MapLayerView* mapLayerView1=new MapLayerView;
 
-	Map* map2=new Map;
-	MapView* mapView2=new MapView;
+	MapLayer* mapLayer2=new MapLayer;
+	MapLayerView* mapLayerView2=new MapLayerView;
 
 	OGR* ogr=new OGR;
 	
-	ogr->readMap(map1, mapView1,"D:/GIS data/FRA_adm/FRA_adm1.shp",true);
-	ogr->readMap(map2, mapView2,"D:/GIS data/FRA_adm/FRA_adm2.shp",true);
-	mapLayers.push_back(mapView1->getMapNode());
-	mapLayers.push_back(mapView2->getMapNode());
+	ogr->readMapLayer(mapLayer1, mapLayerView1,"D:/GIS data/FRA_adm/FRA_adm1.shp",true);
+	ogr->readMapLayer(mapLayer2, mapLayerView2,"D:/GIS data/FRA_adm/FRA_adm2.shp",true);
+	mapLayers.push_back(mapLayerView1->getMapLayerNode());
+	mapLayers.push_back(mapLayerView2->getMapLayerNode());
 
 	matrixTranslate=new osg::MatrixTransform();
 	matrixRotate=new osg::MatrixTransform();

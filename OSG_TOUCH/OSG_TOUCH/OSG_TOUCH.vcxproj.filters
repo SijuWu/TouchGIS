@@ -51,9 +51,6 @@
     <ClInclude Include="MapPolygon.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Map.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="MapGeometry.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -64,9 +61,6 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="PolygonView.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="MapView.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="OGR.h">
@@ -88,6 +82,12 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="LinearRingView.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayer.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayerView.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
@@ -113,9 +113,6 @@
     <ClCompile Include="MapPolygon.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Map.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="MapGeometry.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -126,9 +123,6 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="PolygonView.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="MapView.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="OGR.cpp">
@@ -150,6 +144,12 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="LinearRingView.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="MapLayer.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="MapLayerView.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
